@@ -39,9 +39,6 @@ def parse_new():
         # extract metadata (area name, addresses)
         metadator = MetadataScanner(ws)
         area_name, streets = metadator.extract_area(), metadator.extract_streets()
-        if "\n" in area_name:
-            logger.warning("++++ MAM NEW LINE!")
-            logger.warning(area_name)
 
         zurlowany_path = path.replace("./resources/excel/", "http://szemud.pl/wp-content/uploads/2015/10/")
         zurlowany_path = zurlowany_path.replace(".xlsx", ".pdf")

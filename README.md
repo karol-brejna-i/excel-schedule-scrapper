@@ -1,7 +1,7 @@
 
 
 # TO DO
-2. Clean up logging (it's too noisy right now)
-3. Describe procedure of obtaining resources (schedules)
-4. Short description of example usage (test_*.py files) -- pdf2go.com
-5. Think of returning Value Objects instead of tuples
+1. Add proper README
+2. Describe procedure of obtaining resources (schedules) -- pdf2go.com
+3. Short description of example usage (test_*.py files) 
+4. Think of returning Value Objects instead of tuples

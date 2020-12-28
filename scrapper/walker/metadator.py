@@ -36,7 +36,6 @@ class MetadataScanner:
             result = ""
             for i in range(0, header_width):
                 cell = self.worksheet.cell(a_row, starting_col + i)
-                # print(f"cell {cell}")
                 if cell.value:
                     result += cell.value
 

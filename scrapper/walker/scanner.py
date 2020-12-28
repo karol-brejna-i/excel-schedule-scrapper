@@ -268,7 +268,7 @@ class TableScanner:
         # XXX TODO debug
         for p in neighbour_cells:
             if p.fill.fgColor.rgb not in COLOR_NAMES_LOOKUP:
-                logger.warn(f"dziwny kolor: {p.fill.fgColor.rgb}          {p} ")
+                logger.warn(f"unknown color: {p.fill.fgColor.rgb}          {p} ")
 
         colors = set(
             map(lambda p: COLOR_NAMES_LOOKUP[
@@ -317,10 +317,10 @@ class TableScanner:
                 m = ScheduleDataParser.month_from_day_data(month_no, self.get_number_of_days(year, month_no), days_data)
                 schedule.set_month(m.month_of_year, m)
             except Exception as e:
-                logger.error(f"------------ {month} z {path} jest nieudany. przyjrzyj się.")
+                logger.error(f"------------ {month} z {path} is malformed. take a look at it.")
                 logger.error(e)
 
             if not self.right_number_of_days(year, month_no, no_of_days):
-                logger.warning(f"!!!!!!!!!!!!!!!!!!!!!!!!! dziwny dziwny; {path} {month_name} {month_no} {no_of_days}")
+                logger.warning(f"!!!!!!!!!!!!!!!!!!!!!!!!! stranger things; {path} {month_name} {month_no} {no_of_days}")
 
         return schedule
