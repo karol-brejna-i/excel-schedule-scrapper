@@ -2,6 +2,7 @@ import pickle
 
 from openpyxl import load_workbook
 
+from scrapper.env_config import CURRENT_SCHEDULE
 from scrapper.model.schedule import Area
 from scrapper.walker import logger
 from scrapper.walker.metadator import MetadataScanner
@@ -17,37 +18,55 @@ def get_input_file_names():
 
 
 def parse_new():
-    year = 2020
+    year = CURRENT_SCHEDULE
     names = get_input_file_names()
-    # names = ['./resources/excel/bojano-2-harmonogram-2020-kalendarz-rejon-1-01.07.20-c.pdf-bojano-2.xlsx']
-    # names = ['./resources/excel/karczemki-harmonogram-2020-kalendarz-rejon-1-01.07.20-c.pdf-karczemki.xlsx']
-    # names = ['./resources/excel/koleczkowo-2-harmonogram-2020-kalendarz-rejon-1-01.07.20-c.pdf-koleczkowo-2.xlsx']
+    # names = ['./resources/excel/bojano-2-harmonogram-2021-1-1.xlsx']
+    # names = ['./resources/excel/kamien-kowalewo-ul.-zimowa-harmonogram-2021-.xlsx']
+    # names = ['./resources/excel/czestkowo-glazica-szemud-ulica-bursztynowa-donimierz-ulica-zablotna-maszyna-harmonogram-2021-kalendarz-rejon-2.xlsx']
+    # names = ['./resources/excel/bedargowo-zeblewo-harmonogram-2021-1-1.xlsx']
+    # names = ['./resources/excel/bojano-3-harmonogram-2021.xlsx']
 
-    areas, calendars = [], []
+    areas, schedules = [], []
     for name in names:
         path = name
+        logger.info(f"path: ----------------------------------------- {path}")
+
         wb = load_workbook(path)
         ws = wb.worksheets[0]
         # print(f"Sheet {ws} max rows: {ws.max_row} max cols: {ws.max_column}")
-        logger.info(f"path: ----------------------------------------- {path}")
         scanner = TableScanner(ws)
 
         # extract metadata (area name, addresses)
         metadator = MetadataScanner(ws)
         area_name, streets = metadator.extract_area(), metadator.extract_streets()
-        area = Area(area_name, streets, path)
+        if "\n" in area_name:
+            logger.warning("++++ MAM NEW LINE!")
+            logger.warning(area_name)
+
+        zurlowany_path = path.replace("./resources/excel/", "http://szemud.pl/wp-content/uploads/2015/10/")
+        zurlowany_path = zurlowany_path.replace(".xlsx", ".pdf")
+
+        area = Area(area_name, streets.replace('\n', " "), zurlowany_path)
         areas.append(area)
         # extract event data
-        calendar = scanner.get_calendar(year, area_name, path)
+        schedule = scanner.get_schedule(year, area_name, zurlowany_path)
 
-        calendars.append(calendar)
+        schedules.append(schedule)
 
-    return areas, calendars
+    return areas, schedules
 
 
 result = parse_new()
-print(result[0])
-print(result[1])
 
+#
+# print("results------------")
+# print(result[0])
+# print(result[1])
+# schedules = result[1]
+# s = schedules[0]
+# print(s.months)
+# for m in s.months.items():
+#     print(m)
+#
 pickle.dump(result[0], open("areas.p", "wb"))
 pickle.dump(result[1], open("schedule.p", "wb"))

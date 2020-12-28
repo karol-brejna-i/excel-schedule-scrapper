@@ -1,8 +1,9 @@
 from openpyxl.cell import MergedCell
 from openpyxl.styles.borders import BORDER_NONE
 
-from scrapper.model.schedule import Calendar
-from scrapper.calendar.parsers import CalendarDataParser
+from scrapper.env_config import COLOR_NAMES_LOOKUP, MONTH_DAYS
+from scrapper.model.schedule import Schedule
+from scrapper.utils.parsers import ScheduleDataParser
 from scrapper.model.cells import MonthCellsDescription, DayData, DayCellDescription
 from scrapper.walker import logger
 from scrapper.walker.walker import Walker, MONTH_NAMES
@@ -10,15 +11,6 @@ from scrapper.walker.walker import Walker, MONTH_NAMES
 DAY_NAMES = ['PN', 'WT', 'ŚR', 'CZ', 'PT', 'SO', 'ND']
 
 BORDER_DIRECTIONS = ['left', 'right', 'top', 'bottom']
-
-COLOR_NAMES_LOOKUP = {'00000000': '',
-                      'FFFF0000': 'RED',
-                      'FF6FAC46': 'GREEN', 'FF6FAD46': 'GREEN',
-                      'FF00AFEF': 'BLUE', 'FF5B9BD4': 'BLUE',
-                      'FFFFFF00': 'YELLOW',
-                      'FF000000': 'BLACK', 'FF0D0D0D': 'BLACK',
-                      'FFC55A11': 'BROWN', 'FF00B0F0': 'BROWN', 'FFC65810': 'BROWN',
-                      'FF833B0B': "BLACK AND BROWN", 'FF843B0C': "BLACK AND BROWN"}
 
 
 class TableScanner:
@@ -181,6 +173,12 @@ class TableScanner:
         month_info = self.walker.seek_down(month_info[0] + 6, month_info[1], MONTH_NAMES, self.worksheet.max_row)
         column_months.append(month_info)
 
+        month_info = self.walker.seek_down(month_info[0] + 6, month_info[1], MONTH_NAMES, self.worksheet.max_row)
+        column_months.append(month_info)
+
+        month_info = self.walker.seek_down(month_info[0] + 6, month_info[1], MONTH_NAMES, self.worksheet.max_row)
+        column_months.append(month_info)
+
         # determine length of the sections
         # month_sections = []
         month_descriptions = []
@@ -288,7 +286,6 @@ class TableScanner:
     # XXX TODO introduce leap year logic
     @staticmethod
     def get_number_of_days(year, month_no):
-        MONTH_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         return MONTH_DAYS[month_no - 1]
 
     @staticmethod
@@ -300,12 +297,12 @@ class TableScanner:
         else:
             return no_of_days == against
 
-    def get_calendar(self, year, area_name, path):
+    def get_schedule(self, year, area_name, path):
         # find cells for given months
         months = self.find_months()
 
-        # create calendar object
-        calendar = Calendar(year, area_name, path)
+        # create schedule object
+        schedule = Schedule(year, area_name, path)
 
         for month in months:
             month_name = month.month_name
@@ -317,8 +314,8 @@ class TableScanner:
 
             try:
                 # XXX TODO introduce leap year logic
-                m = CalendarDataParser.month_from_day_data(month_no, self.get_number_of_days(year, month_no), days_data)
-                calendar.set_month(m.month_of_year, m)
+                m = ScheduleDataParser.month_from_day_data(month_no, self.get_number_of_days(year, month_no), days_data)
+                schedule.set_month(m.month_of_year, m)
             except Exception as e:
                 logger.error(f"------------ {month} z {path} jest nieudany. przyjrzyj się.")
                 logger.error(e)
@@ -326,4 +323,4 @@ class TableScanner:
             if not self.right_number_of_days(year, month_no, no_of_days):
                 logger.warning(f"!!!!!!!!!!!!!!!!!!!!!!!!! dziwny dziwny; {path} {month_name} {month_no} {no_of_days}")
 
-        return calendar
+        return schedule

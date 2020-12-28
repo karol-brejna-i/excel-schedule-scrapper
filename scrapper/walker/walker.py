@@ -1,9 +1,7 @@
 from openpyxl.cell import Cell
 
+from scrapper.env_config import MONTH_NAMES
 from scrapper.walker import logger
-
-MONTH_NAMES = ['STYCZEŃ', 'LUTY', 'MARZEC', 'KWIECIEŃ', 'MAJ', 'CZERWIEC',
-                    'LIPIEC', 'SIERPIEŃ', 'WRZESIEŃ', 'PAŹDZIERNIK', 'LISTOPAD', 'GRUDZIEŃ']
 
 
 class Walker:
@@ -95,39 +93,7 @@ class Walker:
 
         return result
 
-    # XXX TODO seems to be unused (now scanner does checking and extracting data, including color info)
-    @classmethod
-    def get_data_for_cel(cls, cell):
-        result = None
-        cell_type = type(cell)
-        if cell_type == Cell:
-            cell_value = cell.value
-            colorek = cell.fill.fgColor
-            result = (cell_value, colorek.rgb)
-
-        return result
-
     @classmethod
     def value_is_a_months_day(cls, value):
         numbers = [i for i in range(1, 32)]
         return value in numbers
-
-
-    # XXX TODO seems to be unused (now scanner does checking and extracting data)
-    def check_neighbour(self, row, col):
-        color = None
-        next_day = False
-
-        neighbour_cell = self.worksheet.cell(row, col)
-        # print(f'right cell {neighbour_cell}')
-        cell_info = self.get_data_for_cel(neighbour_cell)
-        # print(f'right cell info {cell_info})')
-        if cell_info:
-            if self.value_is_a_months_day(cell_info[0]):
-                # print("o, mamy number. czyli to już następny dzień")
-                next_day = True
-            else:
-                # print("ten sam dzień, inna komóreczka")
-                color = cell_info[1]
-
-        return color, next_day

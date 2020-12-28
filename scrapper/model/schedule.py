@@ -1,5 +1,8 @@
 from typing import Set
 
+EVENT_UNKNOWN = -1
+EVENT_MIESZANE, EVENT_BIO, EVENT_SZKLO, EVENT_PAPIER, EVENT_PLASTIK, EVENT_WOLNE = 0, 1, 2, 3, 4, 5
+
 
 class Day:
     """
@@ -65,7 +68,7 @@ class Month:
         return self.__str__()
 
 
-class Calendar:
+class Schedule:
     def __init__(self, year: int, area: str = "", source: str = "", description: str = ""):
         """
         """
@@ -88,14 +91,14 @@ class Calendar:
         self.months[month_no] = month
 
     def __str__(self):
-        return f'Calendar for {self.year} from {self.source}'
+        return f'Schedule for {self.area} ({self.year}) from {self.source}'
 
     def __repr__(self):
         return self.__str__()
 
 
 class Area:
-    def __init__(self, name: str, description: str = "", source: str = ""):
+    def __init__(self, name: str, description: str = '', source: str = ''):
         """
         """
         self.name = name
@@ -108,3 +111,6 @@ class Area:
 
     def __repr__(self):
         return self.__str__()
+
+    def id(self):
+        return self.name

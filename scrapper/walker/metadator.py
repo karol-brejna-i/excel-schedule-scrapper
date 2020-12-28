@@ -1,3 +1,4 @@
+from scrapper.env_config import AREA_NAME_ROW
 from scrapper.walker import logger
 from scrapper.walker.scanner import TableScanner
 
@@ -31,6 +32,16 @@ class MetadataScanner:
         return result
 
     def extract_area(self):
+        def try_row(a_row, starting_col, header_width):
+            result = ""
+            for i in range(0, header_width):
+                cell = self.worksheet.cell(a_row, starting_col + i)
+                # print(f"cell {cell}")
+                if cell.value:
+                    result += cell.value
+
+            return result
+
         logo_cells = self.get_range_by_coords("A1")
 
         header_starting_col = 1 + logo_cells.size['columns']
@@ -39,14 +50,22 @@ class MetadataScanner:
 
         header_width = header_cells.size['columns']
 
-        area_row = 3
+        area_row = AREA_NAME_ROW
 
-        result = ""
-        for i in range(0, header_width):
-            cell = self.worksheet.cell(area_row, header_starting_col + i)
-            # print(f"cell {cell}")
-            if cell.value:
-                result += cell.value
+        # a workaround for 2021 invention: area is sometimes placed on 3rd, sometimes on 4th row...
+        # (we cannot assume that area is located between rows 3 and 5. see: 'BĘDARGOWO, ZĘBLEWO')
+        result = try_row(area_row, header_starting_col, header_width)
+        if not result:
+            area_row = area_row + 1
+            result = try_row(area_row, header_starting_col, header_width)
+
+        # another exception introduced in 2021
+        merged = self.scanner.check_if_merged(area_row, header_starting_col, header_starting_col + 1)
+        if not merged:
+            logger.debug("The cell is not merged, so we need to check further...")
+            result += try_row(area_row + 1, header_starting_col, header_width)
+        else:
+            logger.debug("Finished searching for area name")
 
         return result
 
@@ -60,5 +79,3 @@ class MetadataScanner:
             result = lowest.start_cell.value
 
         return result
-
-

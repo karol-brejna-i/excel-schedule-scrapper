@@ -1,6 +1,6 @@
 import pickle
 
-from scrapper.calendar.exporters import CalendarRedisExporter, CalendarCsvExporter
+from scrapper.utils.exporters import ScheduleRedisExporter, ScheduleCsvExporter
 from scrapper.walker import logger
 
 import log_config
@@ -23,24 +23,29 @@ print(schedule)
 
 def test_redis_exporter():
     print("---------------------------------")
-    cre = CalendarRedisExporter()
-    result = cre.calendars_to_commands(schedule)
+    cre = ScheduleRedisExporter()
+    result = cre.schedules_to_commands(schedule)
     print(result)
+    with open("rozne.priv/events.txt", "wb") as f:
+        f.write(result.encode("utf-8"))
+
     print("---------------------------------")
     result = cre.areas_to_commands(areas)
     print(result)
+    with open("rozne.priv/areas.txt", "wb") as f:
+        f.write(result.encode("utf-8"))
     print("---------------------------------")
 
 
 def test_csv_exporter():
     print("---------------------------------")
-    ace = CalendarCsvExporter()
+    ace = ScheduleCsvExporter()
     result = ace.areas_to_string(areas)
     print(result)
     # with open("areas.csv", "wb") as f:
     #     f.write(result.encode("utf-8"))
     print("---------------------------------")
-    result = ace.calendars_to_string(schedule)
+    result = ace.schedules_to_string(schedule)
     print(result)
     # with open("schedule.csv", "wb") as f:
     #     f.write(result.encode("utf-8"))

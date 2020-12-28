@@ -1,5 +1,3 @@
-NO_COLOR, RED, GREEN, BLUE, YELLOW, BLACK, BROWN, BLACK_AND_BROWN = '', 'RED', 'GREEN', 'BLUE', 'YELLOW', \
-                                                                    'BLACK', 'BROWN', "BLACK AND BROWN"
 
 
 class DayCellDescription:
