@@ -33,7 +33,7 @@ def parse_all():
     # names = ['./resources/excel/czestkowo-glazica-szemud-ulica-bursztynowa-donimierz-ulica-zablotna-maszyna-harmonogram-2021-kalendarz-rejon-2.xlsx']
     # names = ['./resources/excel/bedargowo-zeblewo-harmonogram-2021-1-1.xlsx']
     # names = ['./resources/excel/bojano-3-harmonogram-2021.xlsx']
-
+    print(names)
     result = []
 
     for name in names:
@@ -48,7 +48,7 @@ def parse_all():
         metadator = MetadataScanner(ws)
         area_name, streets = metadator.extract_area(), metadator.extract_streets()
 
-        zurlowany_path = path.replace("./resources/excel/", "http://szemud.pl/wp-content/uploads/2015/10/")
+        zurlowany_path = path.replace("./resources/excel/", "http://szemud.pl/files/file/Formularze_Do_pobrania/Gospodarka_Odpadami/Odpady2012-harmonogram/")
         zurlowany_path = zurlowany_path.replace(".xlsx", ".pdf")
 
         result.append(Area(area_name, streets.replace('\n', " "), zurlowany_path))

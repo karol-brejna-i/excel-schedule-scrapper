@@ -26,13 +26,13 @@ def test_redis_exporter():
     cre = ScheduleRedisExporter()
     result = cre.schedules_to_commands(schedule)
     print(result)
-    with open("rozne.priv/events.txt", "wb") as f:
+    with open("events.txt", "wb") as f:
         f.write(result.encode("utf-8"))
 
     print("---------------------------------")
     result = cre.areas_to_commands(areas)
     print(result)
-    with open("rozne.priv/areas.txt", "wb") as f:
+    with open("areas.txt", "wb") as f:
         f.write(result.encode("utf-8"))
     print("---------------------------------")
 

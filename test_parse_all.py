@@ -40,7 +40,7 @@ def parse_new():
         metadator = MetadataScanner(ws)
         area_name, streets = metadator.extract_area(), metadator.extract_streets()
 
-        zurlowany_path = path.replace("./resources/excel/", "http://szemud.pl/wp-content/uploads/2015/10/")
+        zurlowany_path = path.replace("./resources/excel/", "http://szemud.pl/files/file/Formularze_Do_pobrania/Gospodarka_Odpadami/Odpady2012-harmonogram/")
         zurlowany_path = zurlowany_path.replace(".xlsx", ".pdf")
 
         area = Area(area_name, streets.replace('\n', " "), zurlowany_path)
